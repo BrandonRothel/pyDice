@@ -1,8 +1,8 @@
 from PIL import Image
 
 #Values for the number of dice wide and tall the output image should be
-numDiceWide = 25
-numDiceTall = 25
+numDiceWide = 50
+numDiceTall = 50
 
 #Opens the example image and all dice images
 source_image = Image.open("example.png")
