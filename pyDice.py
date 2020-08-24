@@ -1,27 +1,29 @@
 from PIL import Image
 
-#numDice = 100
-numDiceWide = 50
-numDiceTall = 50
+#Values for the number of dice wide and tall the output image should be
+numDiceWide = 25
+numDiceTall = 25
 
-image = Image.open("example.png")
-dieOne = Image.open("one.png")
-dieTwo = Image.open("two.png")
-dieThree = Image.open("three.png")
-dieFour = Image.open("four.png")
-dieFive = Image.open("five.png")
-dieSix = Image.open("six.png")
-diceImageWidth, diceImageHeight = dieOne.size
-new_image = image.resize((numDiceWide, numDiceTall))
-new_image = new_image.convert('L')
-pix = new_image.load()
+#Opens the example image and all dice images
+source_image = Image.open("example.png")
+die_one = Image.open("DiceImages/one.png")
+die_two = Image.open("DiceImages/two.png")
+die_three = Image.open("DiceImages/three.png")
+die_four = Image.open("DiceImages/four.png")
+die_five = Image.open("DiceImages/five.png")
+die_six = Image.open("DiceImages/six.png")
+#Reads the size of the dice image
+dice_image_width, dice_image_height = die_one.size
+#Resizes the source_image to one pixel per die
+resized_image = source_image.resize((numDiceWide, numDiceTall))
+#Converts the resized_image to black and white
+resized_image = resized_image.convert('L')
+#Creates a list of the pixel greyscale values (0-255)
+pix_val=list(resized_image.getdata())
+#print(pix_val)
 
-pix_val=list(new_image.getdata())
-print(pix_val)
-#print(min(pix_val))
-#print(len(pix_val))
+#Maps the greyscale value (0-255) of each pixel to 1-6
 for i in range(len(pix_val)):
-    #print("Spot: "+str(i)+ " Value: "+str(pix_val[i])+" New Value: ")
     if (pix_val[i] < 42):
         pix_val[i] = 6
     if (pix_val[i] >= 42 and pix_val[i] < 84):
@@ -34,31 +36,32 @@ for i in range(len(pix_val)):
         pix_val[i] = 2
     if (pix_val[i] >= 210):
         pix_val[i] = 1
-    #print(pix_val[i])
     pass
-outSize = (diceImageWidth*numDiceWide,diceImageHeight*numDiceTall)
-#Creates a black image
-output_image = Image.new('L', outSize, color=0)
-for i in range(len(pix_val)):
-    xLocation = int((int(diceImageWidth)*i))%(diceImageWidth*numDiceWide)
-    yLocation = int(i/numDiceWide)*diceImageHeight
-    #print ("x" + str(xLocation))
-    #print ("y" + str(yLocation))
-    #print (i)
-    if (pix_val[i] == 1):
-        output_image.paste(dieOne, (xLocation,yLocation))
-    if (pix_val[i] == 2):
-        output_image.paste(dieTwo, (xLocation,yLocation))
-    if (pix_val[i] == 3):
-        output_image.paste(dieThree, (xLocation,yLocation))
-    if (pix_val[i] == 4):
-        output_image.paste(dieFour, (xLocation,yLocation))
-    if (pix_val[i] == 5):
-        output_image.paste(dieFive, (xLocation,yLocation))
-    if (pix_val[i] == 6):
-        output_image.paste(dieSix, (xLocation,yLocation))
-    pass
-output_image.save('output.png')
-#print(pix_val)
 
-#new_image.show()
+#This calculates the size of the output image
+output_image_size = (dice_image_width*numDiceWide,dice_image_height*numDiceTall)
+#Creates a black image the size of the output image
+output_image = Image.new('L', output_image_size, color=0)
+
+#Iterates over the list and pastes the correct
+#value die onto the corresponding pixel location
+for i in range(len(pix_val)):
+    #Calculates the x_location of the top left corner of die location
+    x_location = int((int(dice_image_width)*i))%(dice_image_width*numDiceWide)
+    #Calculates the y_location of the top left corner of the die image
+    y_location = int(i/numDiceWide)*dice_image_height
+    if (pix_val[i] == 1):
+        output_image.paste(die_one, (x_location,y_location))
+    if (pix_val[i] == 2):
+        output_image.paste(die_two, (x_location,y_location))
+    if (pix_val[i] == 3):
+        output_image.paste(die_three, (x_location,y_location))
+    if (pix_val[i] == 4):
+        output_image.paste(die_four, (x_location,y_location))
+    if (pix_val[i] == 5):
+        output_image.paste(die_five, (x_location,y_location))
+    if (pix_val[i] == 6):
+        output_image.paste(die_six, (x_location,y_location))
+    pass
+#Save the output_image
+output_image.save('output.png')
